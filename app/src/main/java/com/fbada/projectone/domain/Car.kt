@@ -1,16 +1,22 @@
 /**
- * Enum class with available car colours
+ * Colours available as part of [Car] specification
  */
 enum class AvailableColours { Red, Blue, Green, Yellow, Silver, White, Black }
 
+const val petrol = "Petrol"
+const val auto = "Automatic"
+const val manual = "Manual"
+const val big = "Big"
+const val leather = "Leather"
+const val lux = "luxury"
 /**
- * Superclass: Car
+ * Superclass: [Car]
+ * Represents a general vehicle type with the following properties:
  * @property year year of manufacture
  * @property colour exterior colour
  * @property price base price
  */
-// Superclass
-open class Car(val year: Int, val colour: AvailableColours, open var price: Double) {
+open class Car(private val year: Int, private val colour: AvailableColours, open var price: Double) {
     /**
      * Accelerates the vehicle
      */
@@ -30,7 +36,7 @@ open class Car(val year: Int, val colour: AvailableColours, open var price: Doub
  * @property fuelType type of fuel the car runs on
  * @property gearBox type of gearbox
  */
-abstract class BMW(val fuelType: String, val gearBox: String) : Car(1999, AvailableColours.Blue, 400.00) {
+abstract class BMW(private val fuelType: String, private val gearBox: String) : Car(1999, AvailableColours.Blue, 400.00) {
     /**
      * @property price price of the car based on fuel type and gearbox properties.
      *  If car runs on petrol AND is automatic base price is multiplied by 30.
@@ -38,7 +44,7 @@ abstract class BMW(val fuelType: String, val gearBox: String) : Car(1999, Availa
      *
      */
     override var price: Double = 0.0
-        get() = if (fuelType == "Petrol" && gearBox == "Automatic") {
+        get() = if (fuelType == petrol && gearBox == auto) {
             super.price * 30
         } else {
             super.price + 450
@@ -66,10 +72,6 @@ abstract class BMW(val fuelType: String, val gearBox: String) : Car(1999, Availa
  * @property owners number of previous owners
  */
 open class Mercedes(val doors: Int, val owners: Int) : Car(2010, AvailableColours.Green, 500.00) {
-    /**
-     * @property motCheck checks for valid MOT
-     */
-    val motCheck: Boolean = true
 
     /**
      * @property doorPremium multiplies number of doors by 1.5
@@ -89,6 +91,7 @@ open class Mercedes(val doors: Int, val owners: Int) : Car(2010, AvailableColour
             super.price + 10.00
         }
 }
+
 /**
  * Subclass Ford Manufacturer type car.  Extends Car class.
  */
@@ -98,7 +101,7 @@ open class Ford : Car(2020, AvailableColours.Red, 300.00) {
      * @property location pickup location
      */
     var seats: Int = 8
-    val location: String = "Manchester"
+    private val location: String = "Manchester"
     /**
      * @property price base price becomes 100.00
      */
@@ -117,8 +120,6 @@ open class Ford : Car(2020, AvailableColours.Red, 300.00) {
     open fun openBoot() {
         println("boot is open")
     }
-
-
 }
 
 /**
@@ -136,7 +137,7 @@ class Alpha(private val dashboard: String, val satNav: Boolean, val ecoRating: I
      * Navigation function which prints a message dependent on whether the dashboard is big or small.
      */
     override fun navigate() {
-        if (dashboard == "big") {
+        if (dashboard == big) {
             println("Alpha is so easy to navigate")
         } else {
             println("Alpha map is too small")
@@ -151,13 +152,13 @@ class Alpha(private val dashboard: String, val satNav: Boolean, val ecoRating: I
  * @property powerSteering Power steering available
  */
 class Beta(private val insurance: Boolean, private val dashboard: String, private val powerSteering: Boolean) :
-    BMW("Petrol", "Manual") {
+    BMW(petrol, manual) {
     /**
      * Navigation function which prints a message dependent on whether the dashboard is big or small.
      */
     override fun navigate() {
         if (insurance) {
-            if (dashboard == "big") {
+            if (dashboard == big) {
                 price * 40
                 println("Beta is so easy to navigate")
             } else {
@@ -198,7 +199,7 @@ class Mayback : Mercedes(4, 3) {
      * @property bootSize Size of boot
      * @property price Base price plus boot size
      */
-    val bootSize: Double = 4.4
+    private val bootSize: Double = 4.4
     override var price: Double = super.price + bootSize
 }
 /**
@@ -207,7 +208,7 @@ class Mayback : Mercedes(4, 3) {
  * @property maxSpeed Maximum speed of vehicle.
  * @constructor Creates a Sprinter with rating, max speed and gearbox and returns specific specifications
  */
-open class Sprinter(private val rating: Int, val maxSpeed: Int) : Mercedes(2, 2) {
+open class Sprinter(private val rating: Int, private val maxSpeed: Int) : Mercedes(2, 2) {
     constructor(rating: Int, maxSpeed: Int, gearbox: String) : this(rating, maxSpeed) {
         val specs =
             "This Sprinter car has the following specs:\n Customer Rating:$rating\n Gearbox: $gearbox\n Max Speed:$maxSpeed"
@@ -220,7 +221,7 @@ open class Sprinter(private val rating: Int, val maxSpeed: Int) : Mercedes(2, 2)
     /**
      * Calculates a price based on customer rating
      */
-    fun sprinterRatingPrice(): Double {
+    private fun sprinterRatingPrice(): Double {
         val extras: Double = when (rating) {
             in 0..10 -> 2.00 + rating
             in 11..30 -> 6.00 + rating
@@ -233,7 +234,7 @@ open class Sprinter(private val rating: Int, val maxSpeed: Int) : Mercedes(2, 2)
     /**
      * Calculates a price based on vehicle max speed.
      */
-    fun sprinterMaxSpeedPrice(): Double {
+    private fun sprinterMaxSpeedPrice(): Double {
         val extras: Double = when (maxSpeed) {
             in 0..60 -> 10.00
             in 61..80 -> 20.00
@@ -248,7 +249,7 @@ open class Sprinter(private val rating: Int, val maxSpeed: Int) : Mercedes(2, 2)
  *  @property rating Customer rating score.
  *  @property maxSpeed Maximum speed of vehicle.
  */
-class Traveliner(private val rating: Int, val maxSpeed: Int) : Mercedes(6, 1) {
+class Traveliner(private val rating: Int, private val maxSpeed: Int) : Mercedes(6, 1) {
     /**
      * @param rating Customer rating score.
      * @param maxSpeed Maximum speed of vehicle.
@@ -266,7 +267,7 @@ class Traveliner(private val rating: Int, val maxSpeed: Int) : Mercedes(6, 1) {
     /**
      * Calculates a price based on max speed.
      */
-    fun travelinerMaxSpeedPrice(): Double {
+    private fun travelinerMaxSpeedPrice(): Double {
         val extras: Double = when (maxSpeed) {
             in 0..60 -> 10.00
             in 61..80 -> 20.00
@@ -284,7 +285,7 @@ class Traveliner(private val rating: Int, val maxSpeed: Int) : Mercedes(6, 1) {
  * @property spareTyre Spare Tyre available.
  * @property radioType Type of radio inside car.
  */
-class Cougar(private val interior: String, private var materialPrice: Double, val spareTyre: Boolean, val radioType: String) :
+class Cougar(private val interior: String, private var materialPrice: Double, private val spareTyre: Boolean, private val radioType: String) :
     Ford() {
     /**
      * @property price Base price plus interior calculation
@@ -293,8 +294,8 @@ class Cougar(private val interior: String, private var materialPrice: Double, va
     /**
      * Calculates a price based on interior.  If the interior is Leather or Luxuary the price is multiplied by 2.5.
      */
-    fun interiorPremium(): Double {
-        if (interior == "Leather" || interior == "Luxury") {
+    private fun interiorPremium(): Double {
+        if (interior == leather || interior == lux) {
             materialPrice * 2.5
         } else {
             materialPrice
@@ -308,7 +309,7 @@ class Cougar(private val interior: String, private var materialPrice: Double, va
  * @property maxSpeed Maximum speed of vehicle.
  * @property tyreSize Size of tyres.
  */
-class Explorer(val interior: String, val maxSpeed: Double, val tyreSize: Double) : Ford() {
+class Explorer(private val interior: String, private val maxSpeed: Double, private val tyreSize: Double) : Ford() {
     /**
      * @property price Base price multiplied by max speed.
      */
@@ -327,7 +328,7 @@ class Explorer(val interior: String, val maxSpeed: Double, val tyreSize: Double)
  * @property sunRoof Sunroof available
  * @property rating Customer rating score.
  */
-class Capri(private val interiorPrice: Int, val sunRoof: Boolean, val rating: Int) : Ford() {
+class Capri(private val interiorPrice: Int, private val sunRoof: Boolean, private val rating: Int) : Ford() {
     /**
      * @property price Base price plus interior price including VAT.
      */
@@ -335,7 +336,7 @@ class Capri(private val interiorPrice: Int, val sunRoof: Boolean, val rating: In
     /**
      * Calculates added VAT into interior price.
      */
-    fun interiorPriceAddVAT(): Int {
+    private fun interiorPriceAddVAT(): Int {
         val vat = interiorPrice / 100 * 20
         val priceWVAT = interiorPrice + vat
         return priceWVAT
