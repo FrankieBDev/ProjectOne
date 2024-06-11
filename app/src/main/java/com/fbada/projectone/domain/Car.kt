@@ -138,11 +138,11 @@ abstract class Ford(
     val interiorMaterial: AvailableInteriorMaterials,
     private var owners: Int,
     year: Int,
-    availableColours: AvailableColours,
+    colour: AvailableColours,
     fuelType: AvailableFuelTypes,
     gearbox: AvailableGearBoxes
 ) :
-    Car(year, availableColours, price = 200.00, fuelType, gearbox) {
+    Car(year, colour, price = 200.00, fuelType, gearbox) {
     /**
      * Calculate ecoRating within specific models
      */
@@ -160,7 +160,7 @@ abstract class Ford(
  * @property powerSteering
  */
 abstract class Alpha(
-    private val powerSteering: Boolean,
+    val powerSteering: Boolean,
     dashboard: AvailableBMWDashboards,
     satNav: AvailableSatNavs,
     location: String,
@@ -180,6 +180,7 @@ abstract class Alpha(
             AvailableBMWDashboards.HUD, AvailableBMWDashboards.SPORT -> ULTIMATE
         }
     }
+
     /**
      * Calculates a score based on sat nav type
      */
@@ -191,6 +192,7 @@ abstract class Alpha(
             AvailableSatNavs.APPLE, AvailableSatNavs.HERE -> ULTIMATE
         }
     }
+
     /**
      * Calculates a combined navigation score based on dashboard and sat nav types and whether power steering is available.
      */
@@ -202,6 +204,7 @@ abstract class Alpha(
             combinedRatingScore
         }
     }
+
     /**
      * Subclass Beta Model type car.  Extends [BMW] class.
      * @property insurance whether insurance available
@@ -239,6 +242,7 @@ abstract class Alpha(
                 throw IllegalStateException("Insurance Not Available")
             }
         }
+
         /**
          * Calculates an insurance bonus based on whether the car has power steering
          */
@@ -248,6 +252,7 @@ abstract class Alpha(
             }
         }
     }
+
     /**
      * Subclass Omega Model type car.  Extends [BMW] class.
      * @property windowSize Size of windows
@@ -267,8 +272,8 @@ abstract class Alpha(
          * @property price base price of the car
          *
          */
-        val omegaTotalPrice = automaticPetrolPremium() + windscreenPremium()
         override var price: Double = 100.0
+        private val omegaTotalPrice = price + automaticPetrolPremium() + windscreenPremium()
         /**
          * Calculates a premium for automatic petrol cars.
          */
@@ -279,6 +284,7 @@ abstract class Alpha(
                 price + 450
             }
         }
+
         /**
          * Calculates a premium based on windscreen size
          */
@@ -289,6 +295,7 @@ abstract class Alpha(
             return price
         }
     }
+
     /**
      * Subclass Maybach Model type car.  Extends [Mercedes] class.
      * @property bootSize size of boot of car
@@ -306,22 +313,21 @@ abstract class Alpha(
     ) :
         Mercedes(doors, maxSpeed, year, colour, fuelType, gearbox) {
         /**
-         * @property price Base price
-         */
-        override var price: Double = 500.00
-        /**
          * Calculates premium price based on boot size
          */
-        fun largeCarPremium() {
-            price + (0.5 * bootSize)
+        fun largeCarPremium(): Double {
+            val largeCarCost = price + (0.5 * bootSize)
+            return largeCarCost
         }
     }
+
+
     /**
      * Subclass Sprinter Model type car.  Extends [Mercedes] class.
      * @property mileage number of miles driven in the car
      * @property interior interior materials available
      */
-    open class Sprinter(
+    class Sprinter(
         var mileage: Int,
         val interior: AvailableInteriorMaterials,
         doors: Int,
@@ -337,6 +343,7 @@ abstract class Alpha(
          */
         override var price: Double =
             super.price + sprinterPriceScoreBasedOnMileage() + sprinterPriceScoreBasedOnMaxSpeed() * 2
+
         /**
          * Calculates a price score based on mileage
          */
@@ -349,6 +356,7 @@ abstract class Alpha(
                 else -> ULTIMATE
             }
         }
+
         /**
          * Calculates a price score based on vehicle max speed.
          */
@@ -361,6 +369,7 @@ abstract class Alpha(
             }
         }
     }
+
     /**
      * Subclass Traviliner Model type car.  Extends [Mercedes] class.
      *  @property powerSteering whether power steering available
@@ -379,6 +388,7 @@ abstract class Alpha(
          * @property price price based on max speed price score.
          */
         override var price: Double = super.price + (travelingPriceBasedOnMaxSpeed() * 3)
+
         /**
          * Calculates a score based on max speed.
          */
@@ -391,6 +401,7 @@ abstract class Alpha(
             }
         }
     }
+
     /**
      * Subclass Cougar Model type car.  Extends [Ford] class.
      * @property radioType Type of radio inside car.
@@ -409,6 +420,7 @@ abstract class Alpha(
          * @property price Base price plus interior score
          */
         override var price: Double = super.price + interiorPremium() * 15
+
         /**
          * Calculates a price based on interior materials and radio.
          */
@@ -432,6 +444,7 @@ abstract class Alpha(
             return (materialPriceScore + radioPriceScore) * 0.75
         }
     }
+
     /**
      * Subclass Explorer Model type car.  Extends [Ford] class.
      * @property spareTyre whether spare tyre available
@@ -452,12 +465,14 @@ abstract class Alpha(
          * @property price Explorer base price
          */
         override var price: Double = 700.00
+
         /**
          * Opens the boot
          */
         override fun openBoot() {
             println("Rear access enabled")
         }
+
         /**
          * Checks if a spare tyre is available based on its presence and size.
          * @return true if a spare tyre is available and its size is less than 89, otherwise unavailable .
@@ -469,6 +484,7 @@ abstract class Alpha(
             } else false
         }
     }
+
     /**
      * Subclass Capri Model type car.  Extends [Ford] class.
      * @property premiumInteriorAvailable whether premium interior is available
@@ -491,14 +507,16 @@ abstract class Alpha(
          * @property price Base price of Capri.
          */
         override var price: Double = 52.00
+
         /**
          * Calculates the eco rating based on fuel type.
          */
         override fun ecoRating(): Int = when (fuelType) {
-                AvailableFuelTypes.PETROL, AvailableFuelTypes.DIESEL -> LOW
-                AvailableFuelTypes.HYBRID -> MEDIUM
-                AvailableFuelTypes.ELECTRIC -> HIGH
-            }
+            AvailableFuelTypes.PETROL, AvailableFuelTypes.DIESEL -> LOW
+            AvailableFuelTypes.HYBRID -> MEDIUM
+            AvailableFuelTypes.ELECTRIC -> HIGH
+        }
+
         /**
          * Calculates the premium for extras including premium interior, sunroof, and comfort rating.
          * @return the total premium for extras
@@ -520,11 +538,30 @@ abstract class Alpha(
             }
             totalPremium += when (ecoRating()) {
                 LOW -> 50.00
-                MEDIUM -> - 100.00
-                HIGH -> - 150.00
+                MEDIUM -> -100.00
+                HIGH -> -150.00
                 else -> 0.00
             }
             return totalPremium
+        }
+    }
+
+    abstract class AlphaSport(
+        powerSteering: Boolean,
+        dashboard: AvailableBMWDashboards,
+        satNav: AvailableSatNavs,
+        location: String,
+        year: Int,
+        colour: AvailableColours,
+        fuelType: AvailableFuelTypes,
+        gearbox: AvailableGearBoxes
+    ) : Alpha(powerSteering, dashboard, satNav, location, year, colour, fuelType, gearbox) {
+        override fun navigate() {
+            if (powerSteering) {
+                println("Alpha Sport offers the optimum driving experience")
+            } else {
+                println("Standard package selected")
+            }
         }
     }
 }
