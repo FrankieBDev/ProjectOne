@@ -1,23 +1,63 @@
-const val PETROL_FUEL_TYPE = "Petrol"
-const val AUTOMATIC_GEARBOX = "Automatic"
-const val MANUAL_GEARBOX = "Manual"
-const val BIG_DASHBOARD = "Big"
-const val LEATHER_INTERIOR = "Leather"
-const val LUXURY_INTERIOR = "luxury"
-
+/**
+ * Scores for use in calculations of prices
+ */
+const val MIN = 0
+const val LOW = 2
+const val MEDIUM = 4
+const val HIGH = 5
+const val ULTIMATE = 7
 /**
  * Colours available as part of [Car] specification
  */
-enum class AvailableColours { Red, Blue, Green, Yellow, Silver, White, Black }
-
+enum class AvailableColours { RED, BLUE, GREEN, YELLOW, SILVER, WHITE, BLACK }
+/**
+ * Fuel Types available as part of [Car] specification
+ */
+enum class AvailableFuelTypes { PETROL, DIESEL, ELECTRIC, HYBRID }
+/**
+ * Gear boxes available as part of [Car] specification
+ */
+enum class AvailableGearBoxes { MANUAL, AUTOMATIC }
+/**
+ * Dashboards available as part of [BMW] specification
+ */
+enum class AvailableBMWDashboards { ANALOGUE, DIGITAL, HUD, IDRIVE, SPORT, CONNECTEDDRIVE }
+/**
+ * Interior materials available as part of [Ford] specification
+ */
+enum class AvailableInteriorMaterials { LEATHER, FABRIC, PLASTIC, FAUX_LEATHER, SUEDE, COMBO }
+/**
+ * Satellite Navigation available as part of [BMW] specification
+ */
+enum class AvailableSatNavs { GARMIN, TOMTOM, MAGELLAN, NAVMAN, APPLE, GOOGLE, WAZE, HERE }
+/**
+ * Insurance available as part of Beta subclass specification
+ */
+enum class AvailableInsurance { BASIC_LIABILITY, STANDARD_PROTECTION, FULL_COVERAGE, PREMIUM_PROTECTION, ROADSIDE_ASSISTANCE }
+/**
+ * Radio available as part of Cougar subclass specification
+ */
+enum class AvailableRadios { FM, CASSETTE_PLAYER, CD_PLAYER, DIGITAL, INTERNET, USB, SMART_PHONE_CONNECT }
 /**
  * Superclass
  * Represents a general vehicle type with the following properties:
  * @property year year of manufacture
  * @property colour exterior colour
  * @property price base price
+ * @property fuelType fuel that runs the car
+ * @property gearBox manual or automatic
  */
-open class Car(private var year: Int, private val colour: AvailableColours, open var price: Double) {
+open class Car(
+    private var year: Int,
+    private val colour: AvailableColours,
+    open var price: Double,
+    val fuelType: AvailableFuelTypes,
+    val gearBox: AvailableGearBoxes
+) {
+    /**
+     *  motCheck checks for valid MOT
+     */
+    var motCheck: Boolean = true
     /**
      * Accelerates the vehicle
      */
@@ -31,25 +71,21 @@ open class Car(private var year: Int, private val colour: AvailableColours, open
         println("Stopped")
     }
 }
-
 /**
- * Subclass BMW Manufacturer type car.  Extends Car class.
- * @property fuelType type of fuel the car runs on
- * @property gearBox type of gearbox
+ * Subclass BMW Manufacturer type car.  Extends [Car] class.
+ * @property dashboard interior dashboard type
+ * @property satNav brand of satellite navigation available
+ * @property location pick up location
  */
-abstract class BMW(val fuelType: String, private val gearBox: String, year: Int, colour: AvailableColours) : Car(year, colour, price = 400.00) {
-    /**
-     * @property price price of the car based on fuel type and gearbox properties.
-     *  If car runs on petrol AND is automatic base price is multiplied by 30.
-     *  If car has alternative properties price is base price plus 450.
-     *
-     */
-    override var price: Double = 0.0
-        get() = if (fuelType == PETROL_FUEL_TYPE && gearBox == AUTOMATIC_GEARBOX) {
-            super.price * 30
-        } else {
-            super.price + 450
-        }
+abstract class BMW(
+    open val dashboard: AvailableBMWDashboards,
+    open val satNav: AvailableSatNavs,
+    var location: String,
+    year: Int,
+    colour: AvailableColours,
+    fuelType: AvailableFuelTypes,
+    gearbox: AvailableGearBoxes
+) : Car(year, colour, price = 400.00, fuelType, gearbox) {
     /**
      * Reverses the vehicle
      */
@@ -70,50 +106,47 @@ abstract class BMW(val fuelType: String, private val gearBox: String, year: Int,
 /**
  * Subclass Mercedes Manufacturer type car.  Extends Car class.
  * @property doors number of doors
+ * @property maxSpeed maximum speed of the car
+ */
+open class Mercedes(
+    private var doors: Int,
+    var maxSpeed: Int,
+    year: Int,
+    colours: AvailableColours,
+    fuelType: AvailableFuelTypes,
+    gearbox: AvailableGearBoxes
+) : Car(year, colours, price = 500.00, fuelType, gearbox) {
+    /**
+     * Book a test drive based on mot validity
+     */
+    fun bookTestDrive() {
+        if (motCheck) {
+            println("Test drive booked")
+        } else {
+            throw IllegalStateException("MOT needed before test drive can be booked")
+        }
+    }
+}
+/**
+ * Subclass Ford Manufacturer type car.  Extends [Car] class.
+ * @property seats max number of people that can fit in the car
+ * @property interiorMaterial interior material type
  * @property owners number of previous owners
  */
-open class Mercedes(val doors: Int, val owners: Int, year: Int, availableColours: AvailableColours) : Car(year, availableColours, price = 500.00) {
+abstract class Ford(
+    private var seats: Int,
+    val interiorMaterial: AvailableInteriorMaterials,
+    private var owners: Int,
+    year: Int,
+    availableColours: AvailableColours,
+    fuelType: AvailableFuelTypes,
+    gearbox: AvailableGearBoxes
+) :
+    Car(year, availableColours, price = 200.00, fuelType, gearbox) {
     /**
-     * @property price price of the car based on doors property.
-     *  If a car has less than 5 doors 10 is added to base price.
-     *  If car has 5 to 8 doors 20 is added to base price, if there are more than 8 doors 33 is added.
+     * Calculate ecoRating within specific models
      */
-    override var price: Double = super.price + when {
-        doors > 8 -> 33.00
-        doors >= 5 -> 20.00
-        else -> 10.00
-    }
-
-    /**
-    *  motCheck checks for valid MOT
-    */
-    var motCheck: Boolean = true
-}
-
-/**
- * Subclass Ford Manufacturer type car.  Extends Car class.
- */
-open class Ford(year: Int, availableColours: AvailableColours) : Car(year, availableColours, price = 300.00) {
-    /**
-     * @property seats number of seats
-     */
-    var seats: Int = 8
-
-    /**
-     * @property location pickup location
-     */
-    var location: String = "Manchester"
-    /**
-     * @property price base price becomes 100.00
-     */
-    override var price: Double = 100.00
-
-    /**
-     * Start test drive
-     */
-    fun testDrive() {
-        println("Lets take this for a spin!")
-    }
+    abstract fun ecoRating(): Int
 
     /**
      * Opens the boot
@@ -121,215 +154,378 @@ open class Ford(year: Int, availableColours: AvailableColours) : Car(year, avail
     open fun openBoot() {
         println("boot is open")
     }
-
-
 }
-
 /**
- * Subclass Alpha Model type car.  Extends BMW class.
- * @property dashboard Big or small dashboard type
- * @property satNav Sat Nav available
- * @property ecoRating Eco Rating Score
+ * Subclass Alpha Model type car.  Extends [BMW] class.
+ * @property powerSteering
  */
-class Alpha(private val dashboard: String, val satNav: Boolean, private val ecoRating: Int, year: Int, colour: AvailableColours) : BMW(fuelType = "Diesel", gearBox = "Manual", year, colour) {
+abstract class Alpha(
+    private val powerSteering: Boolean,
+    dashboard: AvailableBMWDashboards,
+    satNav: AvailableSatNavs,
+    location: String,
+    year: Int,
+    colour: AvailableColours,
+    fuelType: AvailableFuelTypes,
+    gearbox: AvailableGearBoxes
+) : BMW(dashboard, satNav, location, year, colour, fuelType, gearbox) {
     /**
-     * @property price Base price plus eco rating multiplied by 2.
+     * Calculates a score based on dashboard type
      */
-    override var price: Double = super.price + (ecoRating * 2)
-    /**
-     * Navigation function which prints a message dependent on whether the dashboard is big or small.
-     */
-    override fun navigate() {
-        if (dashboard == BIG_DASHBOARD) {
-            println("Alpha is so easy to navigate")
-        } else {
-            println("Alpha map is too small")
+    fun dashboardScore(): Int {
+        return when (dashboard) {
+            AvailableBMWDashboards.ANALOGUE -> LOW
+            AvailableBMWDashboards.CONNECTEDDRIVE, AvailableBMWDashboards.IDRIVE -> MEDIUM
+            AvailableBMWDashboards.DIGITAL -> HIGH
+            AvailableBMWDashboards.HUD, AvailableBMWDashboards.SPORT -> ULTIMATE
         }
     }
-}
-
-/**
- * Subclass Beta Model type car.  Extends BMW class.
- * @property insurance Insurance available
- * @property dashboard Big or small dashboard type
- * @property powerSteering Power steering available
- */
-class Beta(val insurance: Boolean, val dashboard: String, private val powerSteering: Boolean, year: Int, availableColours: AvailableColours) : BMW(fuelType = PETROL_FUEL_TYPE, gearBox = MANUAL_GEARBOX, year, availableColours) {
     /**
-     * Navigation function which prints a message dependent on whether the dashboard is big or small.
+     * Calculates a score based on sat nav type
      */
-    override fun navigate() {
+    fun satNavScore(): Int {
+        return when (satNav) {
+            AvailableSatNavs.GARMIN -> LOW
+            AvailableSatNavs.TOMTOM, AvailableSatNavs.MAGELLAN -> MEDIUM
+            AvailableSatNavs.NAVMAN, AvailableSatNavs.WAZE, AvailableSatNavs.GOOGLE -> HIGH
+            AvailableSatNavs.APPLE, AvailableSatNavs.HERE -> ULTIMATE
+        }
+    }
+    /**
+     * Calculates a combined navigation score based on dashboard and sat nav types and whether power steering is available.
+     */
+    fun alphaNavigationRatingBonus(): Int {
+        val combinedRatingScore = dashboardScore() + satNavScore()
+        return if (powerSteering) {
+            combinedRatingScore * 2
+        } else {
+            combinedRatingScore
+        }
+    }
+    /**
+     * Subclass Beta Model type car.  Extends [BMW] class.
+     * @property insurance whether insurance available
+     * @property insuranceType types of insurance
+     * @property powerSteering whether power steering available
+     */
+    abstract class Beta(
+        var insurance: Boolean,
+        var insuranceType: AvailableInsurance?,
+        private var powerSteering: Boolean,
+        dashboard: AvailableBMWDashboards,
+        satNav: AvailableSatNavs,
+        location: String,
+        year: Int,
+        colour: AvailableColours,
+        fuelType: AvailableFuelTypes,
+        gearbox: AvailableGearBoxes
+    ) : BMW(dashboard, satNav, location, year, colour, fuelType, gearbox) {
+        /**
+         * Calculates an insurance score based on insurance type
+         */
+        fun insuranceScore(): Int {
+            return if (insurance) {
+                when (insuranceType) {
+                    AvailableInsurance.BASIC_LIABILITY -> MIN
+                    AvailableInsurance.STANDARD_PROTECTION -> LOW
+                    AvailableInsurance.FULL_COVERAGE -> MEDIUM
+                    AvailableInsurance.PREMIUM_PROTECTION -> HIGH
+                    AvailableInsurance.ROADSIDE_ASSISTANCE -> ULTIMATE
+                    else -> {
+                        throw IllegalStateException("No insurance selected")
+                    }
+                }
+            } else {
+                throw IllegalStateException("Insurance Not Available")
+            }
+        }
+        /**
+         * Calculates an insurance bonus based on whether the car has power steering
+         */
+        fun insuranceBonus() {
             if (powerSteering) {
-                println("Beta is so easy to navigate")
-        } else {
-            println("This car is tricky to navigate")
+                insuranceScore() + 1
+            }
         }
     }
-}
-/**
- * Subclass Omega Model type car.  Extends BMW class.
- * @property windowSize Size of windows
- * @property dashboard Big or small dashboard type
- * @property ecoRating Eco Rating Score
- */
-class Omega(private val windowSize: Int, val dashboard: String, year: Int, availableColours: AvailableColours) : BMW(fuelType = PETROL_FUEL_TYPE, gearBox = MANUAL_GEARBOX, year, availableColours) {
     /**
-     * Navigation function which prints a message dependent on whether the dashboard is big or small.
+     * Subclass Omega Model type car.  Extends [BMW] class.
+     * @property windowSize Size of windows
      */
-    override fun navigate() {
-        if (dashboard == BIG_DASHBOARD) {
-            println("Omega is so easy to navigate")
-        } else {
-            println("Omega map is too small")
+    abstract class Omega(
+        private var windowSize: Int,
+        dashboard: AvailableBMWDashboards,
+        satNav: AvailableSatNavs,
+        location: String,
+        year: Int,
+        colour: AvailableColours,
+        fuelType: AvailableFuelTypes,
+        gearbox: AvailableGearBoxes
+    ) : BMW(dashboard, satNav, location, year, colour, fuelType, gearbox) {
+        /**
+         * @property omegaTotalPrice Total price of the Omega model, including premiums
+         * @property price base price of the car
+         *
+         */
+        val omegaTotalPrice = automaticPetrolPremium() + windscreenPremium()
+        override var price: Double = 100.0
+        /**
+         * Calculates a premium for automatic petrol cars.
+         */
+        fun automaticPetrolPremium(): Double {
+            return if (fuelType == AvailableFuelTypes.PETROL && gearBox == AvailableGearBoxes.AUTOMATIC) {
+                price * 30
+            } else {
+                price + 450
+            }
+        }
+        /**
+         * Calculates a premium based on windscreen size
+         */
+        fun windscreenPremium(): Double {
+            if (windowSize > 88.9) {
+                price += 53.00
+            }
+            return price
         }
     }
-}
+    /**
+     * Subclass Maybach Model type car.  Extends [Mercedes] class.
+     * @property bootSize size of boot of car
+     * @property interior interior materials available
+     */
+    class Maybach(
+        var bootSize: Double,
+        val interior: AvailableInteriorMaterials,
+        doors: Int,
+        maxSpeed: Int,
+        year: Int,
+        colour: AvailableColours,
+        fuelType: AvailableFuelTypes,
+        gearbox: AvailableGearBoxes
+    ) :
+        Mercedes(doors, maxSpeed, year, colour, fuelType, gearbox) {
+        /**
+         * @property price Base price
+         */
+        override var price: Double = 500.00
+        /**
+         * Calculates premium price based on boot size
+         */
+        fun largeCarPremium() {
+            price + (0.5 * bootSize)
+        }
+    }
+    /**
+     * Subclass Sprinter Model type car.  Extends [Mercedes] class.
+     * @property mileage number of miles driven in the car
+     * @property interior interior materials available
+     */
+    open class Sprinter(
+        var mileage: Int,
+        val interior: AvailableInteriorMaterials,
+        doors: Int,
+        maxSpeed: Int,
+        year: Int,
+        colour: AvailableColours,
+        fuelType: AvailableFuelTypes,
+        gearbox: AvailableGearBoxes
+    ) :
+        Mercedes(doors, maxSpeed, year, colour, fuelType, gearbox) {
+        /**
+         * @property price price based on mileage and max speed scores
+         */
+        override var price: Double =
+            super.price + sprinterPriceScoreBasedOnMileage() + sprinterPriceScoreBasedOnMaxSpeed() * 2
+        /**
+         * Calculates a price score based on mileage
+         */
+        private fun sprinterPriceScoreBasedOnMileage(): Int {
+            return when (mileage) {
+                in 0..100 -> MIN
+                in 100..500 -> LOW
+                in 500..700 -> MEDIUM
+                in 700..999 -> HIGH
+                else -> ULTIMATE
+            }
+        }
+        /**
+         * Calculates a price score based on vehicle max speed.
+         */
+        private fun sprinterPriceScoreBasedOnMaxSpeed(): Int {
+            return when (maxSpeed) {
+                in 0..60 -> LOW
+                in 61..80 -> MEDIUM
+                in 81..100 -> HIGH
+                else -> ULTIMATE
+            }
+        }
+    }
+    /**
+     * Subclass Traviliner Model type car.  Extends [Mercedes] class.
+     *  @property powerSteering whether power steering available
+     */
+    class Traveliner(
+        var powerSteering: Boolean,
+        doors: Int,
+        maxSpeed: Int,
+        year: Int,
+        colour: AvailableColours,
+        fuelType: AvailableFuelTypes,
+        gearbox: AvailableGearBoxes
+    ) :
+        Mercedes(doors, maxSpeed, year, colour, fuelType, gearbox) {
+        /**
+         * @property price price based on max speed price score.
+         */
+        override var price: Double = super.price + (travelingPriceBasedOnMaxSpeed() * 3)
+        /**
+         * Calculates a score based on max speed.
+         */
+        private fun travelingPriceBasedOnMaxSpeed(): Int {
+            return when (maxSpeed) {
+                in 0..60 -> LOW
+                in 61..80 -> MEDIUM
+                in 81..100 -> HIGH
+                else -> ULTIMATE
+            }
+        }
+    }
+    /**
+     * Subclass Cougar Model type car.  Extends [Ford] class.
+     * @property radioType Type of radio inside car.
+     */
+    abstract class Cougar(
+        private val radioType: AvailableRadios,
+        seats: Int,
+        interior: AvailableInteriorMaterials,
+        owners: Int,
+        year: Int,
+        availableColours: AvailableColours,
+        fuelType: AvailableFuelTypes,
+        gearbox: AvailableGearBoxes
+    ) : Ford(seats, interior, owners, year, availableColours, fuelType, gearbox) {
+        /**
+         * @property price Base price plus interior score
+         */
+        override var price: Double = super.price + interiorPremium() * 15
+        /**
+         * Calculates a price based on interior materials and radio.
+         */
+        private fun interiorPremium(): Double {
+            val materialPriceScore = when (interiorMaterial) {
+                AvailableInteriorMaterials.LEATHER, AvailableInteriorMaterials.SUEDE -> HIGH
+                AvailableInteriorMaterials.COMBO -> HIGH
+                AvailableInteriorMaterials.FABRIC -> MEDIUM
+                else -> {
+                    LOW
+                }
+            }
+            val radioPriceScore = when (radioType) {
+                AvailableRadios.SMART_PHONE_CONNECT -> ULTIMATE
+                AvailableRadios.INTERNET, AvailableRadios.DIGITAL -> HIGH
+                AvailableRadios.CD_PLAYER -> LOW
+                else -> {
+                    MIN
+                }
+            }
+            return (materialPriceScore + radioPriceScore) * 0.75
+        }
+    }
+    /**
+     * Subclass Explorer Model type car.  Extends [Ford] class.
+     * @property spareTyre whether spare tyre available
+     * @property tyreSize Size of tyres.
+     */
+    abstract class Explorer(
+        var spareTyre: Boolean,
+        var tyreSize: Double,
+        seats: Int,
+        interior: AvailableInteriorMaterials,
+        owners: Int,
+        year: Int,
+        availableColours: AvailableColours,
+        fuelType: AvailableFuelTypes,
+        gearbox: AvailableGearBoxes
+    ) : Ford(seats, interior, owners, year, availableColours, fuelType, gearbox) {
+        /**
+         * @property price Explorer base price
+         */
+        override var price: Double = 700.00
+        /**
+         * Opens the boot
+         */
+        override fun openBoot() {
+            println("Rear access enabled")
+        }
+        /**
+         * Checks if a spare tyre is available based on its presence and size.
+         * @return true if a spare tyre is available and its size is less than 89, otherwise unavailable .
+         */
+        fun spareTyreAvailable(): Boolean {
+            return if (spareTyre) {
+                tyreSize < 89
+                true
+            } else false
+        }
+    }
+    /**
+     * Subclass Capri Model type car.  Extends [Ford] class.
+     * @property premiumInteriorAvailable whether premium interior is available
+     * @property sunRoof whether the car has a sunroof
+     * @property comfortRating comfort rating of the car
+     */
+    abstract class Capri(
+        private var premiumInteriorAvailable: Boolean,
+        private var sunRoof: Boolean,
+        var comfortRating: Int,
+        seats: Int,
+        interior: AvailableInteriorMaterials,
+        owners: Int,
+        year: Int,
+        availableColours: AvailableColours,
+        fuelType: AvailableFuelTypes,
+        gearbox: AvailableGearBoxes
+    ) : Ford(seats, interior, owners, year, availableColours, fuelType, gearbox) {
+        /**
+         * @property price Base price of Capri.
+         */
+        override var price: Double = 52.00
+        /**
+         * Calculates the eco rating based on fuel type.
+         */
+        override fun ecoRating(): Int = when (fuelType) {
+                AvailableFuelTypes.PETROL, AvailableFuelTypes.DIESEL -> LOW
+                AvailableFuelTypes.HYBRID -> MEDIUM
+                AvailableFuelTypes.ELECTRIC -> HIGH
+            }
+        /**
+         * Calculates the premium for extras including premium interior, sunroof, and comfort rating.
+         * @return the total premium for extras
+         */
+        fun extrasPremium(): Double {
+            var totalPremium = price
 
-/**
- * Subclass Mayback Model type car.  Extends Mercedes class.
- */
-class Maybach(year: Int, availableColours: AvailableColours) : Mercedes(doors = 4, owners = 3, year, availableColours) {
-    /**
-     * @property bootSize Size of boot
-     * @property price Base price plus boot size
-     */
-    private var bootSize: Double = 4.4
-    override var price: Double = super.price + bootSize
-}
-/**
- * Subclass Sprinter Model type car.  Extends Mercedes class.
- * @property rating Customer rating score.
- * @property maxSpeed Maximum speed of vehicle.
- * @constructor Creates a Sprinter with rating, max speed and gearbox and returns specific specifications
- */
-open class Sprinter(private val rating: Int, private val maxSpeed: Int, year: Int, availableColours: AvailableColours) : Mercedes(2, 2, year, availableColours) {
-    constructor(rating: Int, maxSpeed: Int, gearbox: String, year: Int, availableColours: AvailableColours) : this(rating, maxSpeed, year, availableColours) {
-        val specs =
-            "This Sprinter car has the following specs:\n Customer Rating:$rating\n Gearbox: $gearbox\n Max Speed:$maxSpeed"
-        println(specs)
-    }
-    /**
-     * @property price Base price plus Sprinter Rating Price and Sprinter Max Speed Price
-     */
-    override var price: Double = super.price + sprinterPriceBasedOnRating() + sprinterPriceBasedOnMaxSpeed()
-    /**
-     * Calculates a price based on customer rating
-     */
-    private fun sprinterPriceBasedOnRating(): Double {
-        return when (rating) {
-            in 0..10 -> 2.00 + rating
-            in 11..30 -> 6.00 + rating
-            in 31..55 -> 10.00 + rating
-            in 56..77 -> 15.00 + rating
-            else -> 22.00 + rating
+            if (premiumInteriorAvailable) {
+                totalPremium += 100.00
+            }
+            if (sunRoof) {
+                totalPremium += 200.00
+            }
+            totalPremium += when (comfortRating) {
+                in 0..2 -> 50.00
+                in 3..4 -> 100.00
+                in 5..7 -> 150.00
+                else -> 200.00
+            }
+            totalPremium += when (ecoRating()) {
+                LOW -> 50.00
+                MEDIUM -> - 100.00
+                HIGH -> - 150.00
+                else -> 0.00
+            }
+            return totalPremium
         }
-    }
-    /**
-     * Calculates a price based on vehicle max speed.
-     */
-    private fun sprinterPriceBasedOnMaxSpeed(): Double {
-        return when (maxSpeed) {
-            in 0..60 -> 10.00
-            in 61..80 -> 20.00
-            in 81..100 -> 30.00
-            else -> 50.00
-        }
-    }
-}
-/**
- * Subclass Traviliner Model type car.  Extends Mercedes class.
- *  @property rating Customer rating score.
- *  @property maxSpeed Maximum speed of vehicle.
- */
-class Traveliner(private val rating: Int, private val maxSpeed: Int, year: Int, availableColours: AvailableColours) : Mercedes(doors = 6, owners = 1, year, availableColours) {
-    /**
-     * @param rating Customer rating score.
-     * @param maxSpeed Maximum speed of vehicle.
-     * @param gearBox Gearbox type.
-     */
-    constructor(rating: Int, maxSpeed: Int, gearbox: String, year: Int, availableColours: AvailableColours) : this(rating, maxSpeed, year, availableColours) {
-        val specs =
-            "This Traveliner car has the following specs:\n Customer Rating:$rating\n Gearbox: $gearbox\n Max Speed:$maxSpeed \n Number of Doors:$doors \n Previous Owners $owners"
-        println(specs)
-    }
-    /**
-     * @property price Base price plus max speed price calculation.
-     */
-    override var price: Double = super.price + travelinerPriceBasedOnMaxSpeed()
-    /**
-     * Calculates a price based on max speed.
-     */
-    private fun travelinerPriceBasedOnMaxSpeed(): Double {
-        return when (maxSpeed) {
-            in 0..60 -> 10.00
-            in 61..80 -> 20.00
-            in 81..100 -> 30.00
-            else -> 50.00
-        }
-    }
-
-}
-/**
- * Subclass Cougar Model type car.  Extends Ford class.
- * @property interior Interior material type.
- * @property materialPrice Price of interior material.
- * @property spareTyre Spare Tyre available.
- * @property radioType Type of radio inside car.
- */
-class Cougar(val interior: String, private var materialPrice: Double, private val spareTyre: Boolean, val radioType: String, year: Int, availableColours: AvailableColours) : Ford(year, availableColours) {
-    /**
-     * @property price Base price plus interior calculation
-     */
-    override var price: Double = super.price + interiorPremium()
-    /**
-     * Calculates a price based on interior.  If the interior is LEATHER_INTERIOR or Luxuary the price is multiplied by 2.5.
-     */
-    private fun interiorPremium(): Double {
-        if (interior == LEATHER_INTERIOR || interior == LUXURY_INTERIOR) {
-            materialPrice * 2.5
-        } else {
-            materialPrice
-        }
-        return materialPrice
-    }
-}
-/**
- * Subclass Explorer Model type car.  Extends Ford class.
- * @property interior Interior material type.
- * @property maxSpeed Maximum speed of vehicle.
- * @property tyreSize Size of tyres.
- */
-class Explorer(val interior: String, private val maxSpeed: Double, private val tyreSize: Double, year: Int, availableColours: AvailableColours) : Ford(year, availableColours) {
-    /**
-     * @property price Base price multiplied by max speed.
-     */
-    override var price: Double = super.price * maxSpeed
-    /**
-     * Opens the boot
-     */
-    override fun openBoot() {
-        println("Rear access enabled")
-    }
-
-}
-/**
- * Subclass Capri Model type car.  Extends Ford class.
- * @property interiorPrice Cost of interior features.
- * @property sunRoof Sunroof available
- * @property rating Customer rating score.
- */
-class Capri(private val interiorPrice: Int, val sunRoof: Boolean, private val rating: Int, year: Int, availableColours: AvailableColours) : Ford(year, availableColours) {
-    /**
-     * @property price Base price plus interior price including VAT.
-     */
-    override var price: Double = super.price + interiorPriceIncludingVAT()
-
-    /**
-     * Calculates added VAT into interior price.
-     */
-    private fun interiorPriceIncludingVAT(): Int {
-        val vat = interiorPrice / 100 * 20
-        return interiorPrice + vat
     }
 }
 
