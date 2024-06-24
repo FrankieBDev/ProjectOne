@@ -6,38 +6,47 @@ const val LOW = 2
 const val MEDIUM = 4
 const val HIGH = 5
 const val ULTIMATE = 7
+
 /**
  * Colours available as part of [Car] specification
  */
 enum class AvailableColours { RED, BLUE, GREEN, YELLOW, SILVER, WHITE, BLACK }
+
 /**
  * Fuel Types available as part of [Car] specification
  */
 enum class AvailableFuelTypes { PETROL, DIESEL, ELECTRIC, HYBRID }
+
 /**
  * Gear boxes available as part of [Car] specification
  */
 enum class AvailableGearBoxes { MANUAL, AUTOMATIC }
+
 /**
  * Dashboards available as part of [BMW] specification
  */
 enum class AvailableBMWDashboards { ANALOGUE, DIGITAL, HUD, IDRIVE, SPORT, CONNECTEDDRIVE }
+
 /**
  * Interior materials available as part of [Ford] specification
  */
 enum class AvailableInteriorMaterials { LEATHER, FABRIC, PLASTIC, FAUX_LEATHER, SUEDE, COMBO }
+
 /**
  * Satellite Navigation available as part of [BMW] specification
  */
 enum class AvailableSatNavs { GARMIN, TOMTOM, MAGELLAN, NAVMAN, APPLE, GOOGLE, WAZE, HERE }
+
 /**
  * Insurance available as part of Beta subclass specification
  */
 enum class AvailableInsurance { BASIC_LIABILITY, STANDARD_PROTECTION, FULL_COVERAGE, PREMIUM_PROTECTION, ROADSIDE_ASSISTANCE }
+
 /**
  * Radio available as part of Cougar subclass specification
  */
 enum class AvailableRadios { FM, CASSETTE_PLAYER, CD_PLAYER, DIGITAL, INTERNET, USB, SMART_PHONE_CONNECT }
+
 /**
  * Superclass
  * Represents a general vehicle type with the following properties:
@@ -58,12 +67,14 @@ open class Car(
      *  motCheck checks for valid MOT
      */
     var motCheck: Boolean = true
+
     /**
      * Accelerates the vehicle
      */
     private fun accelerate() {
         println("Move forward")
     }
+
     /**
      * Halts the vehicle
      */
@@ -71,6 +82,7 @@ open class Car(
         println("Stopped")
     }
 }
+
 /**
  * Subclass BMW Manufacturer type car.  Extends [Car] class.
  * @property dashboard interior dashboard type
@@ -92,17 +104,20 @@ abstract class BMW(
     fun reverse() {
         println("Move backwards")
     }
+
     /**
      * Starts the windscreen wipers
      */
     fun windscreenWipers() {
         println("Turn on windscreen wipers")
     }
+
     /**
      * Abstract function to navigate the vehicle.
      */
     abstract fun navigate()
 }
+
 /**
  * Subclass Mercedes Manufacturer type car.  Extends Car class.
  * @property doors number of doors
@@ -127,6 +142,7 @@ open class Mercedes(
         }
     }
 }
+
 /**
  * Subclass Ford Manufacturer type car.  Extends [Car] class.
  * @property seats max number of people that can fit in the car
@@ -155,6 +171,7 @@ abstract class Ford(
         println("boot is open")
     }
 }
+
 /**
  * Subclass Alpha Model type car.  Extends [BMW] class.
  * @property powerSteering
@@ -227,21 +244,17 @@ abstract class Alpha(
          * Calculates an insurance score based on insurance type
          */
         fun insuranceScore(): Int {
-            return if (insurance) {
-                when (insuranceType) {
+            return insuranceType?.takeIf { insurance }?.let {
+                when (it) {
                     AvailableInsurance.BASIC_LIABILITY -> MIN
                     AvailableInsurance.STANDARD_PROTECTION -> LOW
                     AvailableInsurance.FULL_COVERAGE -> MEDIUM
                     AvailableInsurance.PREMIUM_PROTECTION -> HIGH
                     AvailableInsurance.ROADSIDE_ASSISTANCE -> ULTIMATE
-                    else -> {
-                        throw IllegalStateException("No insurance selected")
-                    }
                 }
-            } else {
-                throw IllegalStateException("Insurance Not Available")
-            }
+            } ?: throw IllegalStateException("Insurance Not Available")
         }
+
 
         /**
          * Calculates an insurance bonus based on whether the car has power steering
@@ -268,12 +281,16 @@ abstract class Alpha(
         gearbox: AvailableGearBoxes
     ) : BMW(dashboard, satNav, location, year, colour, fuelType, gearbox) {
         /**
-         * @property omegaTotalPrice Total price of the Omega model, including premiums
          * @property price base price of the car
          *
          */
         override var price: Double = 100.0
-        private val omegaTotalPrice = price + automaticPetrolPremium() + windscreenPremium()
+
+        /**
+         * @property omegaTotalPrice Total price of the Omega model, including premiums
+         */
+        val omegaTotalPrice = price + automaticPetrolPremium() + windscreenPremium()
+
         /**
          * Calculates a premium for automatic petrol cars.
          */
@@ -316,8 +333,7 @@ abstract class Alpha(
          * Calculates premium price based on boot size
          */
         fun largeCarPremium(): Double {
-            val largeCarCost = price + (0.5 * bootSize)
-            return largeCarCost
+            return price + (0.5 * bootSize)
         }
     }
 
@@ -425,7 +441,13 @@ abstract class Alpha(
          * Calculates a price based on interior materials and radio.
          */
         private fun interiorPremium(): Double {
-            val materialPriceScore = when (interiorMaterial) {
+            val materialPrice = materialPriceScore(interiorMaterial)
+            val radioPrice = radioPriceScore(radioType)
+            return (materialPrice + radioPrice) * 0.75
+        }
+
+        private fun materialPriceScore(material: AvailableInteriorMaterials): Int {
+            return when (material) {
                 AvailableInteriorMaterials.LEATHER, AvailableInteriorMaterials.SUEDE -> HIGH
                 AvailableInteriorMaterials.COMBO -> HIGH
                 AvailableInteriorMaterials.FABRIC -> MEDIUM
@@ -433,7 +455,10 @@ abstract class Alpha(
                     LOW
                 }
             }
-            val radioPriceScore = when (radioType) {
+        }
+
+        private fun radioPriceScore(radio: AvailableRadios): Int {
+            return when (radio) {
                 AvailableRadios.SMART_PHONE_CONNECT -> ULTIMATE
                 AvailableRadios.INTERNET, AvailableRadios.DIGITAL -> HIGH
                 AvailableRadios.CD_PLAYER -> LOW
@@ -441,18 +466,17 @@ abstract class Alpha(
                     MIN
                 }
             }
-            return (materialPriceScore + radioPriceScore) * 0.75
         }
     }
 
     /**
      * Subclass Explorer Model type car.  Extends [Ford] class.
      * @property spareTyre whether spare tyre available
-     * @property tyreSize Size of tyres.
+     * @property spareTyreSize Size of spare tyres available.
      */
     abstract class Explorer(
         var spareTyre: Boolean,
-        var tyreSize: Double,
+        var spareTyreSize: Double,
         seats: Int,
         interior: AvailableInteriorMaterials,
         owners: Int,
@@ -478,10 +502,7 @@ abstract class Alpha(
          * @return true if a spare tyre is available and its size is less than 89, otherwise unavailable .
          */
         fun spareTyreAvailable(): Boolean {
-            return if (spareTyre) {
-                tyreSize < 89
-                true
-            } else false
+            return (spareTyreSize < 89).takeIf { spareTyre } ?: false
         }
     }
 
