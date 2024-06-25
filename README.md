@@ -20,7 +20,7 @@ The project is based on a 'Car' class. It currently features a two-level hierarc
 - **Manufacturer Subclasses:** These extend from the 'Car' superclass.
 - **Model Classes:** These extend from the manufacturer subclasses.
 
-![Screenshot 2024-05-20 at 11 41 36](https://github.com/FrankieBDev/ProjectOne/assets/115299077/4752ac8b-33d8-4a9a-9c23-50e393e7d03b)
+![Carv2](https://github.com/FrankieBDev/ProjectOne/assets/115299077/5c470e5a-e98a-4063-859f-f1e7bb1a4b0f)
 
 ## Testing
 
