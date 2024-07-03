@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">ProjectOne</string>
+    <string name="car_count">Number of Cars Available</string>
+    <string name="cheapest_car">Cheapest Car Price </string>
+    <string name="expensive_car">Most Expensive Car Price </string>
+    <string name="average_car">Average Car Price</string>
+    <string name="bmw_count">Number of BMW Cars Available</string>
+    <string name="mercedes_count">Number of Mercedes Cars Available</string>
+    <string name="ford_count">Number of Ford Cars Available\</string>
+    <string name="automatic_count">Number of Automatic Cars Available</string>
+    <string name="manual_count">Number of Manual Cars Available</string>
+    <string name="picture_of_the_listed_car">Picture of the listed car</string>
+    <string name="car_description">Car Description \n Very Specific Details About This Specific Car. \n Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit. </string>
 </resources>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/number_of_cars"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/car_count" />
+
+    <TextView
+        android:id="@+id/cheapest_car"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/cheapest_car" />
+
+    <TextView
+        android:id="@+id/expensive_car"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/expensive_car" />
+
+    <TextView
+        android:id="@+id/average_car"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/average_car" />
+
+    <TextView
+        android:id="@+id/number_of_bmw_cars"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/bmw_count" />
+
+    <TextView
+        android:id="@+id/number_of_mercedes_cars"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/mercedes_count" />
+
+    <TextView
+        android:id="@+id/number_of_ford_cars"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/ford_count" />
+
+    <TextView
+        android:id="@+id/number_of_automatic_cars"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/automatic_count" />
+
+    <TextView
+        android:id="@+id/number_of_manual_cars"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/manual_count" />
+
+    <ImageView
+        android:id="@+id/car_image1.1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description1.1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+
+    <ImageView
+        android:id="@+id/car_image1.2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description1.2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+
+    <ImageView
+        android:id="@+id/car_image1.3"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description1.3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+
+    <ImageView
+        android:id="@+id/car_image1.4"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description1.4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+
+    <ImageView
+        android:id="@+id/car_image1.5"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description1.5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+    <ImageView
+        android:id="@+id/car_image1.6"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description1.6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+    <ImageView
+        android:id="@+id/car_image1.7"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description1.7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+    <ImageView
+        android:id="@+id/car_image1.8"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description1.8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+    <ImageView
+        android:id="@+id/car_image1.9"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description1.9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+
+    <ImageView
+        android:id="@+id/car_image2.1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description2.1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+
+    <ImageView
+        android:id="@+id/car_image2.2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description2.2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+
+    <ImageView
+        android:id="@+id/car_image2.3"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description2.3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+
+    <ImageView
+        android:id="@+id/car_image2.4"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/car_placeholder"
+        android:contentDescription="@string/picture_of_the_listed_car" />
+
+    <TextView
+        android:id="@+id/car_description2.4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_description" />
+
+</LinearLayout>
+
+
+
